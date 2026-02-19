@@ -9,6 +9,8 @@ from sklearn.model_selection import train_test_split
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from sklearn.metrics import roc_auc_score
+
 from churnml.config import TrainConfig
 from churnml.data import load_csv
 from churnml.features import split_xy
@@ -42,6 +44,10 @@ def main():
         json.dump(cfg.model_dump(), f, ensure_ascii=False, indent=2)
 
     print(os.path.join(args.out_dir, "model.joblib"))
+
+    p_val = model.predict_proba(X_va)[:, 1]
+    roc = roc_auc_score(y_va, p_val)
+    print(f"Validation ROC-AUC: {roc:.4f}")
 
 
 if __name__ == "__main__":
