@@ -7,3 +7,4 @@ pydantic>=2.6
 ruff>=0.5
 pre-commit>=3.7
 catboost>=1.2
+shap>=0.45

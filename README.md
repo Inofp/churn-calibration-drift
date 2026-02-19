@@ -25,3 +25,7 @@ Decision threshold selected under minimum precision constraint of 0.65
 
 ### Reliability Diagram
 ![Reliability](docs/images/reliability_isotonic.png)
+
+## Explainability (SHAP)
+
+![SHAP summary](docs/images/shap_summary_catboost.png)
