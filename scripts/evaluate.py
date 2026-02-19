@@ -38,6 +38,7 @@ def main():
     t_base = choose_threshold_by_precision(y, p_base, args.min_precision)
     metrics_out["base"] = compute_metrics(y, p_base, t_base)
 
+    plotted_any = False
     for method in ["sigmoid", "isotonic"]:
         path = os.path.join(args.artifacts_dir, f"calibrated_{method}.joblib")
         if not os.path.exists(path):
@@ -52,16 +53,34 @@ def main():
         save_roc_curve(fpr, tpr, os.path.join(args.out_dir, f"roc_{method}.png"))
         save_pr_curve(rec, prec, os.path.join(args.out_dir, f"pr_{method}.png"))
         save_reliability(y, p, os.path.join(args.out_dir, f"reliability_{method}.png"))
+        plotted_any = True
 
-    with open(os.path.join(args.out_dir, "metrics.json"), "w", encoding="utf-8") as f:
+    metrics_path = os.path.join(args.out_dir, "metrics.json")
+    with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics_out, f, ensure_ascii=False, indent=2)
 
-    with open(os.path.join(args.out_dir, "thresholds.json"), "w", encoding="utf-8") as f:
+    thresholds_path = os.path.join(args.out_dir, "thresholds.json")
+    with open(thresholds_path, "w", encoding="utf-8") as f:
         json.dump(
             {k: v["threshold"] for k, v in metrics_out.items()}, f, ensure_ascii=False, indent=2
         )
 
-    print(os.path.join(args.out_dir, "metrics.json"))
+    best_variant = (
+        max(metrics_out.items(), key=lambda kv: kv[1]["pr_auc"])[0] if metrics_out else None
+    )
+    summary = {
+        "best_variant": best_variant,
+        "variants": list(metrics_out.keys()),
+        "min_precision_constraint": float(args.min_precision),
+        "plots_written": bool(plotted_any),
+    }
+
+    summary_path = os.path.join(args.out_dir, "summary.json")
+    with open(summary_path, "w", encoding="utf-8") as f:
+        json.dump(summary, f, ensure_ascii=False, indent=2)
+
+    print(metrics_path)
+    print(summary_path)
 
 
 if __name__ == "__main__":
