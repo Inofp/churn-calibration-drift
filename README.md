@@ -1,4 +1,3 @@
-- synthetic churn dataset generation
 - logistic regression baseline
 - probability calibration (Platt / Isotonic)
 - threshold selection under precision constraint
