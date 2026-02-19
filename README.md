@@ -1,1 +1,6 @@
-# churn-calibration-drift
+- synthetic churn dataset generation
+- logistic regression baseline
+- probability calibration (Platt / Isotonic)
+- threshold selection under precision constraint
+- drift detection using PSI
+- reproducible artifacts (model, metrics, plots)
